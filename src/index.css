@@ -13,27 +13,30 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-hackathon-dark font-sans antialiased;
-    background-image: radial-gradient(circle at top right, rgba(34, 211, 238, 0.08), transparent),
-                      radial-gradient(circle at bottom left, rgba(255, 87, 198, 0.08), transparent);
+    @apply bg-white text-hackathon-dark font-sans antialiased;
+    background-image: 
+      linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+      radial-gradient(circle at top right, rgba(34, 211, 238, 0.05), transparent),
+      radial-gradient(circle at bottom left, rgba(255, 87, 198, 0.05), transparent);
+    background-size: 40px 100%, 100% 100%, 100% 100%;
     min-height: 100vh;
   }
 }
 
 .glass-card {
-  @apply bg-white/90 backdrop-blur-lg border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-2xl;
+  @apply bg-white border border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-none;
 }
 
 .btn-primary {
-  @apply px-6 py-3 bg-hackathon-purple text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-hackathon-purple/40 cursor-pointer;
+  @apply px-6 py-3 bg-hackathon-purple text-white rounded-none font-bold transition-all hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] cursor-pointer border-2 border-black;
 }
 
 .btn-secondary {
-  @apply px-6 py-3 bg-hackathon-cyan text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-hackathon-cyan/40 cursor-pointer;
+  @apply px-6 py-3 bg-hackathon-cyan text-black rounded-none font-bold transition-all hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] cursor-pointer border-2 border-black;
 }
 
 .btn-outline {
-  @apply px-6 py-3 border-2 border-hackathon-purple text-hackathon-purple rounded-xl font-bold transition-all hover:bg-hackathon-purple hover:text-white cursor-pointer;
+  @apply px-6 py-3 border-2 border-black text-black rounded-none font-bold transition-all hover:bg-black hover:text-white cursor-pointer shadow-[4px_4px_0px_0px_rgba(0,0,0,1)];
 }
 
 .hackathon-title-box {

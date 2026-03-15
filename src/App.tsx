@@ -244,6 +244,20 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
+        {/* Top Branding (Moved from Footer) */}
+        <div className="mb-8 text-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-wrap justify-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+              <span>ModelScope 魔搭社区</span>
+              <span>Datawhale</span>
+            </div>
+            <p className="text-slate-300 text-[8px] font-bold tracking-widest uppercase">
+              © 2026 AI Hackathon Tour 高校联赛
+            </p>
+          </div>
+          <div className="mt-4 h-[1px] w-full bg-slate-200" />
+        </div>
+
         {/* Header - Centered */}
         <header className="mb-6 text-center">
           <motion.div
@@ -253,8 +267,6 @@ export default function App() {
           >
             <div className="flex items-center gap-4 mb-1">
               <img src="https://img.alicdn.com/imgextra/i3/O1CN016vU7e81XvU7e81XvU_!!6000000002982-2-tps-200-200.png" alt="ModelScope" className="h-8 opacity-90" referrerPolicy="no-referrer" />
-              <div className="h-5 w-[1px] bg-slate-300" />
-              <span className="text-xs font-bold text-slate-500 tracking-[0.2em] uppercase">高校联赛 · 2026</span>
             </div>
 
             <div className="relative">
@@ -266,7 +278,7 @@ export default function App() {
                 <div className="flex items-center gap-4 mt-2">
                   <span className="text-5xl md:text-7xl font-black tracking-tighter text-hackathon-dark">Tour</span>
                   <div className="bg-gradient-to-r from-hackathon-dark to-hackathon-purple px-6 py-2 transform skew-x-[-12deg]">
-                    <span className="text-2xl md:text-4xl font-bold text-white tracking-wider block transform skew-x-[12deg]">抽奖系统</span>
+                    <span className="text-2xl md:text-4xl font-bold text-white tracking-wider block transform skew-x-[12deg]">高校联赛·2026</span>
                   </div>
                 </div>
               </div>
@@ -508,20 +520,6 @@ export default function App() {
             </section>
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="mt-6 pt-4 border-t border-slate-200 text-center">
-          <div className="flex flex-col items-center gap-3">
-            <div className="flex flex-wrap justify-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-              <span>ModelScope 魔搭社区</span>
-              <span>Datawhale</span>
-              <span>去探索</span>
-            </div>
-            <p className="text-slate-300 text-[8px] font-bold tracking-widest uppercase">
-              © 2026 AI Hackathon Tour 高校联赛 · 组委会
-            </p>
-          </div>
-        </footer>
       </div>
 
       <style>{`
