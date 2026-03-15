@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-hackathon-pink: #ff57c6;
+  --color-hackathon-purple: #6366f1;
+  --color-hackathon-cyan: #22d3ee;
+  --color-hackathon-dark: #0a0a0a;
+  
+  --font-sans: "Space Grotesk", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Noto Sans SC", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-hackathon-dark font-sans antialiased;
+    background-image: radial-gradient(circle at top right, rgba(34, 211, 238, 0.08), transparent),
+                      radial-gradient(circle at bottom left, rgba(255, 87, 198, 0.08), transparent);
+    min-height: 100vh;
+  }
+}
+
+.glass-card {
+  @apply bg-white/90 backdrop-blur-lg border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-2xl;
+}
+
+.btn-primary {
+  @apply px-6 py-3 bg-hackathon-purple text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-hackathon-purple/40 cursor-pointer;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 bg-hackathon-cyan text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-hackathon-cyan/40 cursor-pointer;
+}
+
+.btn-outline {
+  @apply px-6 py-3 border-2 border-hackathon-purple text-hackathon-purple rounded-xl font-bold transition-all hover:bg-hackathon-purple hover:text-white cursor-pointer;
+}
+
+.hackathon-title-box {
+  @apply bg-hackathon-dark text-white px-4 py-1 font-black tracking-tighter;
+}
+
+.hackathon-subtitle-box {
+  @apply bg-gradient-to-r from-hackathon-dark to-hackathon-purple text-white px-6 py-2 font-bold;
+}
