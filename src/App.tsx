@@ -18,7 +18,12 @@ import {
   Download, 
   Upload,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Settings,
+  History,
+  X
 } from 'lucide-react';
 
 interface Winner {
@@ -45,6 +50,8 @@ export default function App() {
   const [round, setRound] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [isListCollapsed, setIsListCollapsed] = useState(false);
+  const [activeDrawer, setActiveDrawer] = useState<'none' | 'management' | 'winners'>('none');
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const progressRef = useRef<number | null>(null);
@@ -123,6 +130,12 @@ export default function App() {
     setShowConfetti(false);
     setDrawProgress(0);
     
+    // Pick an initial name immediately to avoid '???'
+    const initialRandomIndex = Math.floor(Math.random() * remainingNames.length);
+    const initialName = remainingNames[initialRandomIndex];
+    setCurrentName(initialName);
+    currentNameRef.current = initialName;
+    
     const startTime = Date.now();
     let lastShuffleTime = 0;
     const initialShuffleSpeed = 100;
@@ -168,20 +181,19 @@ export default function App() {
     setIsDrawing(false);
     setDrawProgress(0);
     
-    // Use the latest currentName from state or ref if needed
-    // Since state updates might be slightly behind, we can just use the currentName state
-    // but in stopDrawing called from updateProgress, currentName is already set by the interval.
+    const winnerName = currentNameRef.current;
     
     setWinners(prev => {
       const newWinner: Winner = {
         id: Math.random().toString(36).substr(2, 9),
-        name: currentNameRef.current,
+        name: winnerName,
         round: round,
         timestamp: Date.now(),
       };
       return [newWinner, ...prev];
     });
     
+    setCurrentName(winnerName);
     setRound(prev => prev + 1);
     setShowConfetti(true);
 
@@ -243,121 +255,63 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
-        {/* Top Branding (Moved from Footer) */}
-        <div className="mb-8 text-center">
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex flex-wrap justify-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+      <div className="max-w-7xl mx-auto px-4 py-2">
+        {/* Top Branding (More compact) */}
+        <div className="mb-4 text-center">
+          <div className="flex flex-col items-center">
+            <div className="flex flex-wrap justify-center gap-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
               <span>ModelScope 魔搭社区</span>
               <span>Datawhale</span>
             </div>
-            <p className="text-slate-300 text-[8px] font-bold tracking-widest uppercase">
-              © 2026 AI Hackathon Tour 高校联赛
-            </p>
           </div>
-          <div className="mt-4 h-[1px] w-full bg-slate-200" />
+          <div className="mt-2 h-[1px] w-full bg-slate-200/50" />
         </div>
 
-        {/* Header - Centered */}
-        <header className="mb-6 text-center">
+        {/* Header - More compact */}
+        <header className="mb-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center space-y-4"
+            className="flex flex-col items-center space-y-2"
           >
-            <div className="flex items-center gap-4 mb-1">
-              <img src="https://img.alicdn.com/imgextra/i3/O1CN016vU7e81XvU7e81XvU_!!6000000002982-2-tps-200-200.png" alt="ModelScope" className="h-8 opacity-90" referrerPolicy="no-referrer" />
+            <div className="flex items-center gap-3 mb-0">
+              <img src="https://img.alicdn.com/imgextra/i3/O1CN016vU7e81XvU7e81XvU_!!6000000002982-2-tps-200-200.png" alt="ModelScope" className="h-6 opacity-90" referrerPolicy="no-referrer" />
             </div>
 
-            <div className="relative">
+            <div className="relative scale-90 md:scale-100 origin-top">
               <div className="flex flex-col items-center">
                 <div className="flex items-baseline gap-2">
-                  <span className="bg-hackathon-dark text-white px-3 py-1 text-5xl md:text-7xl font-black tracking-tighter">AI</span>
-                  <span className="text-5xl md:text-7xl font-black tracking-tighter text-hackathon-purple">Hackathon</span>
+                  <span className="bg-hackathon-dark text-white px-2 py-0.5 text-4xl md:text-6xl font-black tracking-tighter">AI</span>
+                  <span className="text-4xl md:text-6xl font-black tracking-tighter text-hackathon-purple">Hackathon</span>
                 </div>
-                <div className="flex items-center gap-4 mt-2">
-                  <span className="text-5xl md:text-7xl font-black tracking-tighter text-hackathon-dark">Tour</span>
-                  <div className="bg-gradient-to-r from-hackathon-dark to-hackathon-purple px-6 py-2 transform skew-x-[-12deg]">
-                    <span className="text-2xl md:text-4xl font-bold text-white tracking-wider block transform skew-x-[12deg]">高校联赛·2026</span>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-4xl md:text-6xl font-black tracking-tighter text-hackathon-dark">Tour</span>
+                  <div className="bg-gradient-to-r from-hackathon-dark to-hackathon-purple px-4 py-1.5 transform skew-x-[-12deg]">
+                    <span className="text-xl md:text-3xl font-bold text-white tracking-wider block transform skew-x-[12deg]">高校联赛·2026</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3 mt-4">
-              <div className="bg-hackathon-purple text-white px-6 py-2 font-bold text-lg rounded-sm shadow-lg shadow-hackathon-purple/20">
-                一场关于进化的长跑
+            <div className="flex gap-2 mt-1">
+              <div className="bg-hackathon-purple text-white px-4 py-1.5 font-bold text-base rounded-sm shadow-lg shadow-hackathon-purple/20">
+                别写「简历」
               </div>
-              <div className="bg-hackathon-cyan text-hackathon-dark px-6 py-2 font-bold text-lg rounded-sm shadow-lg shadow-hackathon-cyan/20">
-                从demo到真产品
+              <div className="bg-hackathon-cyan text-hackathon-dark px-4 py-1.5 font-bold text-base rounded-sm shadow-lg shadow-hackathon-cyan/20">
+                去创造「作品」
               </div>
             </div>
           </motion.div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Management */}
-          <div className="lg:col-span-3 space-y-6">
-            <section className="glass-card p-5 border-l-4 border-hackathon-purple">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-black flex items-center gap-2 uppercase tracking-tight">
-                  <Users className="text-hackathon-purple" size={20} />
-                  名单管理
-                </h3>
-                <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">
-                  {names.length} TOTAL
-                </span>
-              </div>
-              
-              <div className="space-y-4">
-                <textarea
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="输入姓名..."
-                  className="w-full h-32 p-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-hackathon-purple focus:border-transparent outline-none transition-all resize-none text-sm font-medium"
-                />
-                
-                <div className="grid grid-cols-2 gap-2">
-                  <button 
-                    onClick={handleAddNames}
-                    className="btn-primary py-3 text-sm flex items-center justify-center gap-2"
-                  >
-                    <UserPlus size={16} /> 添加
-                  </button>
-                  <label className="cursor-pointer btn-outline py-3 text-sm flex items-center justify-center gap-2">
-                    <Upload size={16} /> 导入
-                    <input type="file" accept=".txt,.csv,.xlsx,.xls" className="hidden" onChange={handleFileUpload} />
-                  </label>
-                </div>
-                
-                <button 
-                  onClick={handleClearAll}
-                  className="w-full py-2 text-xs text-slate-400 hover:text-red-500 transition-colors flex items-center justify-center gap-1 font-bold"
-                >
-                  <RotateCcw size={12} /> 重置所有数据
-                </button>
-              </div>
-
-              <div className="mt-8 max-h-[400px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                {names.map((name, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-xl text-sm border border-slate-100 shadow-sm">
-                    <span className="font-bold text-slate-700">{name}</span>
-                    {winners.some(w => w.name === name) && (
-                      <CheckCircle2 size={14} className="text-hackathon-cyan" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
-
+        <div className="relative flex flex-col items-center justify-center">
           {/* Middle Column: 3D Planet Lottery - Centered */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-[380px]">
-            <section className="w-full max-w-[500px] relative flex flex-col items-center justify-center py-2">
+          <div className="w-full max-w-4xl flex flex-col items-center justify-center min-h-[400px]">
+            <section className="w-full relative flex flex-col items-center justify-center py-0">
               {/* 3D Planet Container */}
               <div className="absolute inset-0 flex items-center justify-center perspective-[1000px] pointer-events-none overflow-hidden">
                 <div 
-                  className="relative w-[300px] h-[300px] transition-transform duration-100 ease-linear opacity-40"
+                  className="relative w-[320px] h-[320px] transition-transform duration-100 ease-linear opacity-30"
                   style={{ 
                     transformStyle: 'preserve-3d',
                     transform: `rotateX(${rotation.x}rad) rotateY(${rotation.y}rad)`
@@ -378,13 +332,13 @@ export default function App() {
               {/* Central Display */}
               <div className="relative z-20 text-center space-y-4 w-full flex flex-col items-center">
                 <div className="inline-block px-4 py-1 bg-hackathon-dark text-white font-black text-[10px] tracking-[0.3em] uppercase rounded-full shadow-2xl">
-                  Round {round}
+                  Round {isDrawing ? round : (winners.length > 0 ? winners[0].round : (currentName === '???' ? 1 : round - 1))}
                 </div>
 
                 <div className="h-36 flex flex-col items-center justify-center w-full">
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={currentName + isDrawing}
+                      key={(isDrawing ? currentName : (winners.length > 0 ? winners[0].name : currentName)) + isDrawing}
                       initial={{ scale: 0.5, opacity: 0, filter: 'blur(10px)' }}
                       animate={{ 
                         scale: isDrawing ? 1 : [1, 1.05, 1],
@@ -399,11 +353,11 @@ export default function App() {
                       }}
                       className="text-6xl md:text-8xl font-black tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.05)] text-center w-full truncate px-4"
                     >
-                      {currentName}
+                      {isDrawing ? currentName : (winners.length > 0 ? winners[0].name : currentName)}
                     </motion.div>
                   </AnimatePresence>
                   
-                  {!isDrawing && currentName !== '???' && (
+                  {!isDrawing && winners.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -417,11 +371,11 @@ export default function App() {
                 {/* Progress Bar */}
                 <div className="w-full max-w-[280px] space-y-1">
                   <div className="flex justify-between items-end px-1">
-                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
                       {isDrawing ? "Scanning..." : "Standby"}
                     </span>
                     {isDrawing && (
-                      <span className="text-[8px] font-mono font-bold text-hackathon-purple">
+                      <span className="text-[9px] font-mono font-bold text-hackathon-purple">
                         {Math.round(drawProgress)}%
                       </span>
                     )}
@@ -465,60 +419,166 @@ export default function App() {
             </section>
           </div>
 
-          {/* Right Column: Winners */}
-          <div className="lg:col-span-3 space-y-6">
-            <section className="glass-card p-5 border-r-4 border-hackathon-pink h-full flex flex-col">
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="text-lg font-black flex items-center gap-2 uppercase tracking-tight">
-                  <Trophy className="text-hackathon-pink" size={20} />
-                  中奖名单
-                </h3>
-                <button 
-                  onClick={() => {
-                    const content = winners.map(w => `${w.round},${w.name},${new Date(w.timestamp).toLocaleString()}`).join('\n');
-                    const blob = new Blob([`轮次,姓名,时间\n${content}`], { type: 'text/csv' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'winners.csv';
-                    a.click();
-                  }}
-                  className="text-slate-400 hover:text-hackathon-purple transition-colors"
-                  title="导出CSV"
-                >
-                  <Download size={18} />
-                </button>
-              </div>
+          {/* Floating Action Buttons */}
+          <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+            <button 
+              onClick={() => setActiveDrawer('management')}
+              className="w-14 h-14 bg-white shadow-xl rounded-full flex items-center justify-center text-hackathon-purple hover:bg-hackathon-purple hover:text-white transition-all hover:scale-110 active:scale-90 border border-slate-100"
+              title="名单管理"
+            >
+              <Settings size={24} />
+            </button>
+            <button 
+              onClick={() => setActiveDrawer('winners')}
+              className="w-14 h-14 bg-white shadow-xl rounded-full flex items-center justify-center text-hackathon-pink hover:bg-hackathon-pink hover:text-white transition-all hover:scale-110 active:scale-90 border border-slate-100"
+              title="中奖名单"
+            >
+              <History size={24} />
+            </button>
+          </div>
 
-              <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-                {winners.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-20 text-slate-300">
-                    <Trophy size={48} className="mb-4 opacity-20" />
-                    <p className="text-sm font-bold uppercase tracking-widest">虚位以待</p>
-                  </div>
-                ) : (
-                  winners.map((winner) => (
-                    <motion.div
-                      initial={{ x: 20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      key={winner.id}
-                      className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center justify-between group hover:border-hackathon-pink/30 transition-colors"
+          {/* Drawers */}
+          <AnimatePresence>
+            {activeDrawer !== 'none' && (
+              <>
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setActiveDrawer('none')}
+                  className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[60]"
+                />
+                
+                {/* Drawer Content */}
+                <motion.div
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[70] flex flex-col"
+                >
+                  <div className="p-6 flex items-center justify-between border-b border-slate-100">
+                    <h3 className="text-xl font-black flex items-center gap-3 uppercase tracking-tight">
+                      {activeDrawer === 'management' ? (
+                        <>
+                          <Users className="text-hackathon-purple" size={24} />
+                          名单管理
+                        </>
+                      ) : (
+                        <>
+                          <Trophy className="text-hackathon-pink" size={24} />
+                          中奖名单
+                        </>
+                      )}
+                    </h3>
+                    <button 
+                      onClick={() => setActiveDrawer('none')}
+                      className="p-2 hover:bg-slate-100 rounded-full transition-colors"
                     >
-                      <div>
-                        <div className="font-black text-slate-800 text-lg">{winner.name}</div>
-                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                          Round {winner.round} • {new Date(winner.timestamp).toLocaleTimeString()}
+                      <X size={24} />
+                    </button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                    {activeDrawer === 'management' ? (
+                      <div className="space-y-6">
+                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                          <div className="flex justify-between items-center mb-4">
+                            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">快速添加</span>
+                            <span className="bg-white text-slate-600 px-2 py-1 rounded text-[10px] font-bold border border-slate-100">
+                              {names.length} TOTAL
+                            </span>
+                          </div>
+                          <textarea
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder="输入姓名..."
+                            className="w-full h-32 p-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-hackathon-purple focus:border-transparent outline-none transition-all resize-none text-sm font-medium"
+                          />
+                          <div className="grid grid-cols-2 gap-2 mt-4">
+                            <button 
+                              onClick={handleAddNames}
+                              className="btn-primary py-3 text-sm flex items-center justify-center gap-2"
+                            >
+                              <UserPlus size={16} /> 添加
+                            </button>
+                            <label className="cursor-pointer btn-outline py-3 text-sm flex items-center justify-center gap-2">
+                              <Upload size={16} /> 导入
+                              <input type="file" accept=".txt,.csv,.xlsx,.xls" className="hidden" onChange={handleFileUpload} />
+                            </label>
+                          </div>
+                          <button 
+                            onClick={handleClearAll}
+                            className="w-full mt-4 py-2 text-xs text-slate-400 hover:text-red-500 transition-colors flex items-center justify-center gap-1 font-bold"
+                          >
+                            <RotateCcw size={12} /> 重置所有数据
+                          </button>
+                        </div>
+
+                        <div className="space-y-2">
+                          <span className="text-xs font-black text-slate-400 uppercase tracking-widest block px-1">当前名单</span>
+                          {names.map((name, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl text-sm border border-slate-100">
+                              <span className="font-bold text-slate-700">{name}</span>
+                              {winners.some(w => w.name === name) && (
+                                <CheckCircle2 size={16} className="text-hackathon-cyan" />
+                              )}
+                            </div>
+                          ))}
                         </div>
                       </div>
-                      <div className="w-10 h-10 bg-hackathon-pink/10 text-hackathon-pink rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Trophy size={18} />
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center mb-2 px-1">
+                          <span className="text-xs font-black text-slate-400 uppercase tracking-widest">中奖记录</span>
+                          <button 
+                            onClick={() => {
+                              const content = winners.map(w => `${w.round},${w.name},${new Date(w.timestamp).toLocaleString()}`).join('\n');
+                              const blob = new Blob([`轮次,姓名,时间\n${content}`], { type: 'text/csv' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = 'winners.csv';
+                              a.click();
+                            }}
+                            className="text-slate-400 hover:text-hackathon-purple transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest"
+                          >
+                            <Download size={14} /> 导出CSV
+                          </button>
+                        </div>
+                        {winners.length === 0 ? (
+                          <div className="flex flex-col items-center justify-center py-20 text-slate-300">
+                            <Trophy size={64} className="mb-4 opacity-10" />
+                            <p className="text-sm font-bold uppercase tracking-widest">虚位以待</p>
+                          </div>
+                        ) : (
+                          winners.map((winner) => (
+                            <motion.div
+                              initial={{ x: 20, opacity: 0 }}
+                              animate={{ x: 0, opacity: 1 }}
+                              key={winner.id}
+                              className="p-5 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between group hover:border-hackathon-pink/30 transition-colors"
+                            >
+                              <div>
+                                <div className="font-black text-slate-800 text-xl">{winner.name}</div>
+                                <div className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                  Round {winner.round} • {new Date(winner.timestamp).toLocaleTimeString()}
+                                </div>
+                              </div>
+                              <div className="w-12 h-12 bg-white text-hackathon-pink rounded-full shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Trophy size={20} />
+                              </div>
+                            </motion.div>
+                          ))
+                        )}
                       </div>
-                    </motion.div>
-                  ))
-                )}
-              </div>
-            </section>
-          </div>
+                    )}
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
